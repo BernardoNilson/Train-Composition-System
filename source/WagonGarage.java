@@ -21,4 +21,26 @@ public class WagonGarage extends Garage<Wagon> {
         }
         return null;
     }
+
+    /**
+     * Método verifica se o ID informado é válido
+     * @param id
+     * @return true, se não estiver sendo utilizado
+     */
+    public boolean isValid(int id){
+        for(Wagon wagon : garage){
+            if (wagon.getId() == id) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Método adiciona um novo vagão, se houver posições livres na garagem e se o ID for válido
+     * @param wagon
+     * @return true, caso a criação tenha sido um sucesso
+     */
+    public boolean addWagon(Wagon wagon){
+        if (getCount() <= getLength() && isValid(wagon.getId())) return add(wagon);
+        else return false;
+    }
 }

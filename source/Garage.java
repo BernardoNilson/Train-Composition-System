@@ -53,9 +53,7 @@ public class Garage<Type> {
         if(getCount() <= getLength() && item != null){
             garage.add(item);
             return true;
-        } else {
-            return false;
-        }
+        } else return false;
     }
     
     /**
@@ -66,9 +64,7 @@ public class Garage<Type> {
         if(!garage.isEmpty()){
             garage.remove(item);
             return true;
-        } else {
-            return false;
-        }
+        } else return false;
     }
 
     /**

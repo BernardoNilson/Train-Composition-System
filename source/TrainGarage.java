@@ -41,10 +41,8 @@
      * @return true, caso a criação tenha sido um sucesso
      */
     public boolean createTrain(int id, Locomotive locomotive){
-        if (getCount() <= getLength() && isValid(id) && locomotive != null){
-            add(new Train(id, locomotive));
-            return true;
-        } else return false;
+        if (getCount() <= getLength() && isValid(id) && locomotive != null) return add(new Train(id, locomotive));
+        else return false;
     }
 
 }

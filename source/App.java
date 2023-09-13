@@ -14,9 +14,9 @@ public class App {
 
     public static void main(String[] args) {
         // Geração das locomotivas e dos vagões
-        WagonGarage wagonGarage = new WagonGarage(5);
-        LocomotiveGarage locomotiveGarage = new LocomotiveGarage(5);
-        TrainGarage trainGarage = new TrainGarage(10);
+        WagonGarage wagonGarage = new WagonGarage(15);
+        LocomotiveGarage locomotiveGarage = new LocomotiveGarage(15);
+        TrainGarage trainGarage = new TrainGarage(20);
 
         for (int i = 0; i < 5; i++){
             Wagon wagon = new Wagon(i, (i*9 + 4), null);
@@ -63,8 +63,7 @@ public class App {
                         switch (select) {
                             case "A":
                                 showMessage("INSERIR UMA LOCOMOTIVA");
-                                System.out.print("Informe um novo ID: ");
-                                idLocomotive = scan.nextInt();
+                                idLocomotive = showAvailableOptins("LOCOMOTIVAS", locomotiveGarage.toString());
                                 selectedLocomotive = locomotiveGarage.get(idLocomotive);
 
                                 if(selectedTrain.addLocomotive(selectedLocomotive)){
@@ -75,8 +74,7 @@ public class App {
 
                             case "B":
                                 showMessage("INSERIR UM VAGÃO");
-                                System.out.print("Informe um novo ID: ");
-                                idWagon = scan.nextInt();
+                                idWagon = showAvailableOptins("VAGÕES", wagonGarage.toString());
                                 selectedWagon = wagonGarage.get(idWagon);
 
                                 if(selectedTrain.addWagon(selectedWagon)){
@@ -93,7 +91,7 @@ public class App {
                                     wagonGarage.add(selectedTrain.removeLastWagon());
                                 } else if (selectedTrain.getLocomotiveCount() > 1){
                                     resultMessage(true);
-                                    locomotiveGarage.addLocomotive(selectedTrain.removeLastLocomotive().getId());
+                                    locomotiveGarage.addLocomotive(selectedTrain.removeLastLocomotive());
                                 } else resultMessage(false);
                                 break;
 
@@ -104,7 +102,7 @@ public class App {
                             
                             case "E":
                                 showMessage("LISTAR OS VAGÕES LIVRES");
-                                System.out.println(locomotiveGarage.toString());
+                                System.out.println(wagonGarage.toString());
                                 break;
 
                             case "Z":
@@ -112,7 +110,7 @@ public class App {
                                 break;
 
                             default:
-                                System.out.println("Você pode ter se confundido. Tente novamente.");
+                                resultMessage(false);
                                 break;
                         }
                     } else System.out.println("O ID informado não foi encontrado, tente novamente!");
@@ -130,15 +128,17 @@ public class App {
 
                     if (selectedTrain != null){
                         // Libera os vagões e aloca cada um na garagem
-                        for(Wagon wagon : selectedTrain.getWagons()){
-                            selectedTrain.getWagons().remove(wagon);
-                            wagonGarage.add(wagon);
+                        for(int i = 0; i < selectedTrain.getWagons().size(); i++) {
+                            Wagon wagon = selectedTrain.getWagons().get(i);
+                            selectedTrain.getWagons().remove(i);
+                            wagonGarage.addWagon(wagon);
                         }
 
                         // Libera as locomotivas e aloca cada uma na garagem
-                        for(Locomotive locomotive : selectedTrain.getLocomotives()){
-                            selectedTrain.getLocomotives().remove(locomotive);
-                            locomotiveGarage.addLocomotive(locomotive.getId());
+                        for (int i = 0; i < selectedTrain.getLocomotives().size(); i++) {
+                            Locomotive locomotive = selectedTrain.getLocomotives().get(i);
+                            selectedTrain.getLocomotives().remove(i);
+                            locomotiveGarage.addLocomotive(locomotive);
                         }
 
                         trainGarage.remove(selectedTrain);
@@ -203,10 +203,6 @@ public class App {
 
                             if (train == null) locomotiveGarage.addLocomotive(locomotive);
                             else train.addLocomotive(locomotive);
-                            
-                            i++;
-                            System.out.println("Estou na volta " + i);
-                            System.out.println(line);
                         }
                         in.close();
                         resultMessage(true);
@@ -251,7 +247,7 @@ public class App {
      * @param message - mensagem a ser enviada
      */
     private static void showMessage(String message){
-        System.out.println(" Você selecionou " + message + "!");
+        System.out.println(" Você selecionou: " + message + "!");
     }
 
     /**
@@ -264,7 +260,7 @@ public class App {
         System.out.println(" ( A ) - INSERIR LOCOMOTIVA");
         System.out.println(" ( B ) - INSERIR VAGÃO");
         System.out.println(" ( C ) - REMOVER ÚLTIMO ELEMENTO");
-        System.out.println(" ( D ) - EXIBER LOCOMOTIVAS LIVRES");
+        System.out.println(" ( D ) - EXIBIR LOCOMOTIVAS LIVRES");
         System.out.println(" ( E ) - EXIBIR VAGÕES LIVRES");
         System.out.println(" ( Z ) - ENCERRAR EDIÇÃO");
         System.out.println("----------------------------------------------------");
@@ -289,6 +285,6 @@ public class App {
      */
     public static void resultMessage(boolean mode){
         if (mode) System.out.println(" - Operação concluída com sucesso!");
-        else System.out.println(" - Algo deu errado, revise as informações e tente de novo!");
+        else System.out.println(" - Algo deu errado, revise as informações e tente de novo! Operação não autorizada");
     }
 }

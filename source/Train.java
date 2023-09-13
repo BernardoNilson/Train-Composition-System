@@ -102,12 +102,8 @@ public class Train {
             locomotives.add(newLocomotive);
             newLocomotive.setTrain(this);
             updateCapacityValues();
-            System.out.println(" - status : locomotiva adicionada com sucesso!");
             return true;
-        } else {
-            System.out.println(" - status : locomotiva não adicionada! Não deve possuir nenhum vagão engatado");
-            return false;
-        }
+        } else return false;
     }
     
     /**
@@ -167,7 +163,7 @@ public class Train {
             newWagons += locomotive.getWagonCapacity();
             newWeight += locomotive.getWeightCapacity();
         }
-        if (getLocomotiveCount() > 1) newWeight *= 0.9;
+        if (getLocomotiveCount() > 1) newWagons = (int)(newWagons*0.9);
 
         this.currentWeight = newCurrent;
         this.weightCapacity = newWeight;
