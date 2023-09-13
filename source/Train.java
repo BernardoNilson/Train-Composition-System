@@ -126,43 +126,17 @@ public class Train {
     }
 
     /**
-     * Método remove a última locomotiva do trem, se não houver nenhum vagão 
-     * @param oldLocomotive - locomotiva antiga
-     * @return true, se removida com sucesso
-     */
-    public boolean removeLocomotive(Locomotive oldLocomotive){
-        if (wagons.isEmpty() && getLocomotiveCount() > 1){
-            locomotives.remove(getWagonCount() - 1);
-            oldLocomotive.setTrain(null);
-            updateCapacityValues();
-            return true;
-        } else return false;
-
-    }
-
-    /**
      * Método remove a última locomotiva do trem, se ainda houve vagões para remover
      * @return Locomotive removida
      */
     public Locomotive removeLastLocomotive(){
         if (wagons.isEmpty() && getLocomotiveCount() > 1){
             Locomotive temp = locomotives.get(getWagonCount() - 1);
-            removeLocomotive(temp);
+            locomotives.remove(getWagonCount() - 1);
+            temp.setTrain(null);
+            updateCapacityValues();
             return temp;
         } else return null;
-    }
-
-    /**
-     * Método remove o último vagão do trem, se ainda houve vagões para remover
-     * @param oldWagon - vagão antigo
-     * @return true, se adicionado com sucesso
-     */
-    public boolean removeWagon(Wagon oldWagon){
-        if (!wagons.isEmpty()){
-            wagons.remove(getWagonCount() - 1);
-            oldWagon.setTrain(null);
-            return true;
-        } else return false;
     }
 
     /**
@@ -172,7 +146,8 @@ public class Train {
     public Wagon removeLastWagon(){
         if (!wagons.isEmpty()){
             Wagon temp = wagons.get(getWagonCount() - 1);
-            removeWagon(temp);
+            wagons.remove(getWagonCount() - 1);
+            temp.setTrain(null);
             return temp;
         } else return null;
     }
@@ -192,10 +167,11 @@ public class Train {
             newWagons += locomotive.getWagonCapacity();
             newWeight += locomotive.getWeightCapacity();
         }
+        if (getLocomotiveCount() > 1) newWeight *= 0.9;
 
         this.currentWeight = newCurrent;
         this.weightCapacity = newWeight;
-        this.wagonsCapacity = newWagons / getLocomotiveCount();
+        this.wagonsCapacity = newWagons;
     }
 
     /**

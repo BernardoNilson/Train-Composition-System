@@ -1,10 +1,12 @@
+import java.io.File;
+import java.io.FileWriter;
 import java.util.Scanner;
 
 /**
  * Essa é a aplicação principal do Trabalho de Programação Orientada a Objetos. Para mais informações, consulte o README.md
  * 
  * @author Bernardo Nilson - PUCRS
- * @version 08.09.2023
+ * @version 12.09.2023
  */
 public class App {
 
@@ -142,6 +144,58 @@ public class App {
                         trainGarage.remove(selectedTrain);
                         resultMessage(true);
                     } else resultMessage(false);
+                    break;
+
+                case "E":
+                    showMessage("SALVAR INFORMAÇÕES (.txt)");
+                    try {
+                        File file = new File("locomotives.txt");
+                        FileWriter writer = new FileWriter(file);
+                        for (Locomotive locomotive : locomotiveGarage.getGarage()) {
+                            writer.write(locomotive.getId() + ", ");
+                            writer.write(locomotive.getWeightCapacity() + ", ");
+                            writer.write(locomotive.getWagonCapacity() + ", ");
+                            writer.write(((locomotive.getTrain() != null) ? locomotive.getTrain().getId() : -1));
+                            writer.write("\n");
+                        }
+                        for (Train train : trainGarage.getGarage()) {
+                            for (Locomotive locomotive : train.getLocomotives()) {
+                                writer.write(locomotive.getId() + ", ");
+                                writer.write(locomotive.getWeightCapacity() + ", ");
+                                writer.write(locomotive.getWagonCapacity() + ", ");
+                                writer.write(((locomotive.getTrain() != null) ? locomotive.getTrain().getId() : -1));
+                                writer.write("\n");
+                            }
+                        }
+                        writer.close();
+                    } catch (Exception e){
+                        System.out.println(e);
+                    }
+                    break;
+
+                case "F":
+                    showMessage("CARREGAR INFORMAÇÕES (.txt)");
+                    try {
+                        File archive = new File("locomotives.txt");
+                        Scanner scanner = new Scanner(archive);
+                        while (scanner.hasNextLine()) {
+                            String line = scanner.nextLine();
+                            String[] parts = line.split(",");
+                            int id = Integer.parseInt(parts[0]);
+                            double weightCapacity = Double.parseDouble(parts[1 ]);
+                            int wagonCapacity = Integer.parseInt(parts[2]);
+                            int trainId = Integer.parseInt(parts[3]);
+                            Locomotive locomotive = new Locomotive(id, weightCapacity, wagonCapacity, null);
+                            if (trainId != -1) {
+                                // Train train = train.get(trainId);
+                                locomotive.setTrain(null);
+                            }
+                            // add(locomotive);
+                        }
+                        scanner.close();
+                    } catch (Exception e){
+                        System.out.println(e);
+                    }
                     break;
 
                 case "Z":
