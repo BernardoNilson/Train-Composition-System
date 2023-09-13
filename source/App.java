@@ -93,7 +93,7 @@ public class App {
                                     wagonGarage.add(selectedTrain.removeLastWagon());
                                 } else if (selectedTrain.getLocomotiveCount() > 1){
                                     resultMessage(true);
-                                    locomotiveGarage.add(selectedTrain.removeLastLocomotive());
+                                    locomotiveGarage.addLocomotive(selectedTrain.removeLastLocomotive().getId());
                                 } else resultMessage(false);
                                 break;
 
@@ -138,7 +138,7 @@ public class App {
                         // Libera as locomotivas e aloca cada uma na garagem
                         for(Locomotive locomotive : selectedTrain.getLocomotives()){
                             selectedTrain.getLocomotives().remove(locomotive);
-                            locomotiveGarage.add(locomotive);
+                            locomotiveGarage.addLocomotive(locomotive.getId());
                         }
 
                         trainGarage.remove(selectedTrain);
@@ -148,27 +148,34 @@ public class App {
 
                 case "E":
                     showMessage("SALVAR INFORMAÇÕES (.txt)");
+                    // Tentamos executar o salvamento do arquivo
                     try {
-                        File file = new File("locomotives.txt");
-                        FileWriter writer = new FileWriter(file);
+                        File file = new File("saveFile.txt");    // Cria o arquivo
+                        FileWriter writer = new FileWriter(file);   // Abre o escritor dentro do arquivo
+                        // Escreve cada locomotiva disponível
                         for (Locomotive locomotive : locomotiveGarage.getGarage()) {
-                            writer.write(locomotive.getId() + ", ");
-                            writer.write(locomotive.getWeightCapacity() + ", ");
-                            writer.write(locomotive.getWagonCapacity() + ", ");
-                            writer.write(((locomotive.getTrain() != null) ? locomotive.getTrain().getId() : -1));
+                            writer.write(locomotive.getId() + ",");
+                            writer.write(locomotive.getWeightCapacity() + ",");
+                            writer.write(locomotive.getWagonCapacity() + ",");
+                            if (locomotive.getTrain() != null) writer.write(locomotive.getTrain().getId());
+                            else writer.write("-1");
                             writer.write("\n");
                         }
+                        // Escreve cada locomotiva em uso
                         for (Train train : trainGarage.getGarage()) {
                             for (Locomotive locomotive : train.getLocomotives()) {
-                                writer.write(locomotive.getId() + ", ");
-                                writer.write(locomotive.getWeightCapacity() + ", ");
-                                writer.write(locomotive.getWagonCapacity() + ", ");
-                                writer.write(((locomotive.getTrain() != null) ? locomotive.getTrain().getId() : -1));
+                                writer.write(locomotive.getId() + ",");
+                                writer.write(locomotive.getWeightCapacity() + ",");
+                                writer.write(locomotive.getWagonCapacity() + ",");
+                                if (locomotive.getTrain() != null) writer.write(String.valueOf(locomotive.getTrain().getId()));
+                                else writer.write("-1");
                                 writer.write("\n");
                             }
                         }
                         writer.close();
+                        resultMessage(true);
                     } catch (Exception e){
+                        resultMessage(false);
                         System.out.println(e);
                     }
                     break;
@@ -176,24 +183,35 @@ public class App {
                 case "F":
                     showMessage("CARREGAR INFORMAÇÕES (.txt)");
                     try {
-                        File archive = new File("locomotives.txt");
-                        Scanner scanner = new Scanner(archive);
-                        while (scanner.hasNextLine()) {
-                            String line = scanner.nextLine();
+                        
+                        File archive = new File("loadFile.txt");    // Busca o arquivo
+                        System.out.println(archive.toString());
+                        Scanner in = new Scanner(archive);    // Abre o Scanner dentro do arquivo
+                        // Para cada linha no arquivo
+                        int i = 0;
+                        while (in.hasNextLine()) {
+
+                            String line = in.nextLine();
                             String[] parts = line.split(",");
+
                             int id = Integer.parseInt(parts[0]);
-                            double weightCapacity = Double.parseDouble(parts[1 ]);
+                            double weightCapacity = Double.parseDouble(parts[1]);
                             int wagonCapacity = Integer.parseInt(parts[2]);
                             int trainId = Integer.parseInt(parts[3]);
-                            Locomotive locomotive = new Locomotive(id, weightCapacity, wagonCapacity, null);
-                            if (trainId != -1) {
-                                // Train train = train.get(trainId);
-                                locomotive.setTrain(null);
-                            }
-                            // add(locomotive);
+                            Train train = trainGarage.get(trainId);
+                            Locomotive locomotive = new Locomotive(id, weightCapacity, wagonCapacity, train);
+
+                            if (train == null) locomotiveGarage.addLocomotive(locomotive);
+                            else train.addLocomotive(locomotive);
+                            
+                            i++;
+                            System.out.println("Estou na volta " + i);
+                            System.out.println(line);
                         }
-                        scanner.close();
+                        in.close();
+                        resultMessage(true);
                     } catch (Exception e){
+                        resultMessage(false);
                         System.out.println(e);
                     }
                     break;

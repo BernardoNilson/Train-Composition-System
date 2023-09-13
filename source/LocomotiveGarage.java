@@ -21,4 +21,35 @@
         }
         return null;
     }
+    /**
+     * Método verifica se o ID informado é válido
+     * @param id
+     * @return true, se não estiver sendo utilizado
+     */
+    public boolean isValid(int id){
+        for(Locomotive locomotive : garage){
+            if (locomotive.getId() == id) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Método cria uma nova locomotiva, se houver posições livres na garagem e se o ID for válido
+     * @param id - Novo ID pro trem
+     * @return true, caso a criação tenha sido um sucesso
+     */
+    public boolean addLocomotive(int id){
+        if (getCount() <= getLength() && isValid(id)) return add(get(id));
+        else return false;
+    }
+
+    /**
+     * Método cria uma nova locomotiva, se houver posições livres na garagem e se o ID for válido
+     * @param id - Novo ID pro trem
+     * @return true, caso a criação tenha sido um sucesso
+     */
+    public boolean addLocomotive(Locomotive locomotive){
+        if (isValid(locomotive.getId())) return add(locomotive);
+        else return false;
+    }
 }

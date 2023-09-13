@@ -50,7 +50,7 @@ public class Garage<Type> {
      * @return true, caso tenha adicionado com sucesso
      */
     public boolean add(Type item){
-        if(getCount() <= getLength()){
+        if(getCount() <= getLength() && item != null){
             garage.add(item);
             return true;
         } else {
