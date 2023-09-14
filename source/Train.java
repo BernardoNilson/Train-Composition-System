@@ -98,7 +98,7 @@ public class Train {
      * @return true, se adicionado com sucesso
      */
     public boolean addLocomotive(Locomotive newLocomotive){
-        if (wagons.isEmpty()){
+        if (wagons.isEmpty() && newLocomotive != null){
             locomotives.add(newLocomotive);
             newLocomotive.setTrain(this);
             updateCapacityValues();
@@ -112,23 +112,38 @@ public class Train {
      * @return true, se adicionado com sucesso
      */
     public boolean addWagon(Wagon newWagon){
-        double newWeight = getCurrentWeight() + newWagon.getWeightCapacity();
-        if (newWeight <= getWeightCapacity()){
-            wagons.add(newWagon);
-            newWagon.setTrain(this);
-            updateCapacityValues();
-            return true;
-        } else return false;
+        if(newWagon != null){    
+            double newWeight = getCurrentWeight() + newWagon.getWeightCapacity();
+            if (newWeight <= getWeightCapacity() && getWagonCount() < getWagonsCapacity()){
+                wagons.add(newWagon);
+                newWagon.setTrain(this);
+                updateCapacityValues();
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
-     * Método remove a última locomotiva do trem, se ainda houve vagões para remover
+     * Método remove a última locomotiva do trem, se não houver vagões para remover
      * @return Locomotive removida
      */
     public Locomotive removeLastLocomotive(){
         if (wagons.isEmpty() && getLocomotiveCount() > 1){
-            Locomotive temp = locomotives.get(getWagonCount() - 1);
-            locomotives.remove(getWagonCount() - 1);
+            Locomotive temp = locomotives.remove(getLocomotiveCount() - 1);
+            temp.setTrain(null);
+            updateCapacityValues();
+            return temp;
+        } else return null;
+    }
+
+    /**
+     * Método remove a primeira locomotiva do trem, se não houver vagões para remover e existir somente uma locomotiva
+     * @return Locomotive removida
+     */
+    public Locomotive removeFirstLocomotive(){
+        if (wagons.isEmpty() && getLocomotiveCount() == 1){
+            Locomotive temp = locomotives.remove(0);
             temp.setTrain(null);
             updateCapacityValues();
             return temp;
@@ -141,9 +156,9 @@ public class Train {
      */
     public Wagon removeLastWagon(){
         if (!wagons.isEmpty()){
-            Wagon temp = wagons.get(getWagonCount() - 1);
-            wagons.remove(getWagonCount() - 1);
+            Wagon temp = wagons.remove(getWagonCount() - 1);
             temp.setTrain(null);
+            updateCapacityValues();
             return temp;
         } else return null;
     }

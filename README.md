@@ -1,4 +1,12 @@
 # Train Composition System
+
+## Execução
+O único requisito é possuir o Java OpenJRE (Runtime Environment) 11.0+ ou equivalente.
+
+Execute o comando `java App` dentro do diretório `Train-Composition-System/source`.
+
+Se ocorrer algum erro de incompatibilidade de versões do Java e você usar o VS Code, pode executar usando a opção "Run and Debug" no menu da esquerda. Você pode compilar os arquivos por você mesmo também.
+
 ## Organizações do trabalho
 O seguinte exercício pode ser realizado em grupos de no máximo 3 integrantes. 
 
@@ -87,6 +95,7 @@ os dados de locomotivas, a saber:
 
 ## Configurações 
 O programa foi elaborado usando o Visual Studio Code como ambiente de programação e compilação.
+Testado em ambientes com Ubuntu 22.04 e Windows 10.
 
 Sobre o JAVA:
 > OpenJDK version "11.0.20.1" 2023-08-24

@@ -50,10 +50,8 @@ public class Garage<Type> {
      * @return true, caso tenha adicionado com sucesso
      */
     public boolean add(Type item){
-        if(getCount() <= getLength() && item != null){
-            garage.add(item);
-            return true;
-        } else return false;
+        if(item != null) return garage.add(item);
+        else return false;
     }
     
     /**
@@ -76,7 +74,7 @@ public class Garage<Type> {
         String result = "----------------------------------------------------\n";
 
         for(Type item : garage){
-                result += item.toString() + "\n";
+            result += item.toString() + "\n";
         }
 
         result += "----------------------------------------------------";

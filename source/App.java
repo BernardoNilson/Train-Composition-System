@@ -1,5 +1,8 @@
 import java.io.File;
 import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 /**
@@ -19,10 +22,10 @@ public class App {
         TrainGarage trainGarage = new TrainGarage(20);
 
         for (int i = 0; i < 5; i++){
-            Wagon wagon = new Wagon(i, (i*9 + 4), null);
+            Wagon wagon = new Wagon(i, (i*5 + 4), null);
             wagonGarage.add(wagon);
 
-            Locomotive locomotive = new Locomotive(i, (i*7 + 9), (i*3 + 2), null);
+            Locomotive locomotive = new Locomotive(i, (i*4 + 9), (i*2 + 2), null);
             locomotiveGarage.add(locomotive);
         }
 
@@ -128,21 +131,17 @@ public class App {
 
                     if (selectedTrain != null){
                         // Libera os vagões e aloca cada um na garagem
-                        for(int i = 0; i < selectedTrain.getWagons().size(); i++) {
-                            Wagon wagon = selectedTrain.getWagons().get(i);
-                            selectedTrain.getWagons().remove(i);
-                            wagonGarage.addWagon(wagon);
+                        while (selectedTrain.getWagonCount() > 0){
+                            wagonGarage.addWagon(selectedTrain.removeLastWagon());
                         }
 
                         // Libera as locomotivas e aloca cada uma na garagem
-                        for (int i = 0; i < selectedTrain.getLocomotives().size(); i++) {
-                            Locomotive locomotive = selectedTrain.getLocomotives().get(i);
-                            selectedTrain.getLocomotives().remove(i);
-                            locomotiveGarage.addLocomotive(locomotive);
+                        while (selectedTrain.getLocomotiveCount() > 0){
+                            if (selectedTrain.getLocomotiveCount() == 1) locomotiveGarage.addLocomotive(selectedTrain.removeFirstLocomotive());
+                            else locomotiveGarage.addLocomotive(selectedTrain.removeLastLocomotive());
                         }
-
-                        trainGarage.remove(selectedTrain);
-                        resultMessage(true);
+                        
+                        resultMessage(trainGarage.remove(selectedTrain));
                     } else resultMessage(false);
                     break;
 
@@ -150,7 +149,7 @@ public class App {
                     showMessage("SALVAR INFORMAÇÕES (.txt)");
                     // Tentamos executar o salvamento do arquivo
                     try {
-                        File file = new File("saveFile.txt");    // Cria o arquivo
+                        File file = new File(new File(".."), "saveFile.txt");   // Cria últimao arquivo
                         FileWriter writer = new FileWriter(file);   // Abre o escritor dentro do arquivo
                         // Escreve cada locomotiva disponível
                         for (Locomotive locomotive : locomotiveGarage.getGarage()) {
@@ -184,8 +183,7 @@ public class App {
                     showMessage("CARREGAR INFORMAÇÕES (.txt)");
                     try {
                         
-                        File archive = new File("loadFile.txt");    // Busca o arquivo
-                        System.out.println(archive.toString());
+                        File archive = new File(new File(".."), "loadFile.txt");    // Busca o arquivo
                         Scanner in = new Scanner(archive);    // Abre o Scanner dentro do arquivo
                         // Para cada linha no arquivo
                         int i = 0;
